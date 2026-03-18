@@ -20,7 +20,7 @@ func create_zip(name string) (*os.File, error){
 	if name == ""{
 		return nil, fmt.Errorf("Please provide a path")
 	}
-	archive, err := os.Create("backup1.zip")
+	archive, err := os.Create(name)
 	if err != nil {
 		return nil, err
 	}
