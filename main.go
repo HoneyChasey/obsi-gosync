@@ -29,21 +29,30 @@ func create_zip(name string) (*os.File, error){
 
 
 // get a pointer to the file present in the folder
-func read_file_in_folder(pathfolder string, pointers []*os.File) ([]*os.File, error) {
-	files, err := os.ReadDir(pathfolder)
+func read_file_in_folder(pathfolder string) ([]*os.File, error) {
+	entries, err := os.ReadDir(pathfolder)
 	if err != nil {return nil, fmt.Errorf("Please provide correct path to existing folder or cannot access")}
-	for _, entry := range(files){
-		if entry.IsDir(){continue;}
+
+	var pointers []*os.File
+
+	for _, entry := range(entries){
+		if entry.IsDir(){
+			newPathFolder := filepath.Join(pathfolder, entry.Name())
+			new_pointer, err := read_file_in_folder(newPathFolder)	
+			if err != nil {return nil, fmt.Errorf("Error, cannot read the folder recursive")}
+			pointers = append(pointers, new_pointer...) // Wtf is ...
+			continue
+		}
+
 		fullpath := filepath.Join(pathfolder, entry.Name())
 		file, err := os.Open(fullpath)
 		if err != nil {return nil, fmt.Errorf("Error cannot read or not exist")}
 		pointers = append(pointers, file)
 	}
-return pointers, nil
+	return pointers, nil
 }
 
-
-func write_into_archive(files []*os.File, zipFile *os.File) (error) {
+func write_into_archive(files []*os.File, zipFile *os.File, rootFolder string) (error) {
 	if files == nil || zipFile == nil {return fmt.Errorf("Internal Error")}
 
 	zipWriter := zip.NewWriter(zipFile)
@@ -60,6 +69,12 @@ func write_into_archive(files []*os.File, zipFile *os.File) (error) {
   	return fmt.Errorf("impossible de créer le header : %w", err)
   }
 
+	relativePath, err := filepath.Rel(rootFolder, file.Name())
+	if err != nil {return fmt.Errorf("Canno't calculate the relative path")}
+
+	header.Name = relativePath
+	header.Method = zip.Deflate
+
 	writer, err := zipWriter.CreateHeader(header)
 	if err != nil {
   	return fmt.Errorf("impossible d'écrire le header : %w", err)
@@ -69,16 +84,17 @@ func write_into_archive(files []*os.File, zipFile *os.File) (error) {
   if err != nil {
   	return fmt.Errorf("impossible de copier %s : %w", file.Name(), err)
   }
+
 	}
 	return nil
 }
 
-
 func main(){
+	var folderName = "test"
+	rootPath := filepath.Join("/Users/honeychasey/Documents/projetPerso/go/obsi-go-sync/obsi-gosync", folderName)
 	archive, _ := create_zip("test.zip")
-	files, err := read_file_in_folder("test", pointers)
+	files, err := read_file_in_folder(rootPath)
 	if err != nil {fmt.Println(err)}
 	fmt.Print(files)
-	fmt.Println("Creation of zip archive")
-	write_into_archive(files, archive)
+	write_into_archive(files, archive, rootPath)
 }
