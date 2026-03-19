@@ -11,7 +11,6 @@ import (
 // thx to https://golang.cafe/blog/golang-zip-file-example
 
 // is the arry of all file of the obsidian archive.
-var pointers []*os.File
 
 
 
