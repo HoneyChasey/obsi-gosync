@@ -82,17 +82,7 @@ func write_into_archive(files []*os.File, zipFile *os.File, rootFolder string) (
 	return nil
 }
 
-func CreateZip(scr string, dest string) (error) {
-	if scr == ""  || dest == ""  {return fmt.Errorf("Internal error")}
-	files_pointers, err := read_file_in_folder(scr)
-	if err != nil {return err}
-	archive_pointer, err := create_zip(dest)
-	if err != nil {return err}
-	err = write_into_archive(files_pointers, archive_pointer, scr)
-	return nil
-}
-
-func unzip_archvie(src string, dest string) (error) {
+func Unzip_archvie(src string, dest string) (error) {
 	if src == "" || dest == "" {return fmt.Errorf("Internal Error")}
 	reader, err := zip.OpenReader(src)
 	if err != nil {return fmt.Errorf("Cannot read the archive or not exist")}
@@ -113,3 +103,12 @@ func unzip_archvie(src string, dest string) (error) {
 	return nil
 }
 
+func CreateZip(scr string, dest string) (error) {
+	if scr == ""  || dest == ""  {return fmt.Errorf("Internal error")}
+	files_pointers, err := read_file_in_folder(scr)
+	if err != nil {return err}
+	archive_pointer, err := create_zip(dest)
+	if err != nil {return err}
+	err = write_into_archive(files_pointers, archive_pointer, scr)
+	return nil
+}

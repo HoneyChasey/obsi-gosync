@@ -11,29 +11,28 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// backupCmd represents the backup command
-var backupCmd = &cobra.Command{
-	Use:   "backup <scr> <dst>",
-	Short: "Create and archive of your obsidian folder, encrypting if needed and send it to a server",
-	Long: "Please when running this command, <scr> and <dest> are only usable with absolute path",
-	Args:  cobra.ExactArgs(2), //Checking with cobra 
+// restoreCmd represents the restore command
+var restoreCmd = &cobra.Command{
+	Use:   "restore <scr> <dst>",
+	Short: "Restore backup from your server",
+	Long: `Please when running this command, <scr> <dest> are only usable with absolute path. <scr> is where your archive is stored. <dst> is where your obsidian vault is setupt`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !filepath.IsAbs(args[0]) || !filepath.IsAbs(args[1]) {fmt.Println("The path must be absolute"); cmd.Help(); return} 
-		err := internal.CreateZip(args[0], args[1])
-		if err != nil {fmt.Println("Error:", err)}
+		err := internal.Unzip_archvie(args[0], args[1])
+		if err != nil {fmt.Println("Error",err)}
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(backupCmd)
+	rootCmd.AddCommand(restoreCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// backupCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// restoreCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// backupCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// restoreCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
