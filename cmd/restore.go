@@ -15,7 +15,10 @@ import (
 var restoreCmd = &cobra.Command{
 	Use:   "restore <scr> <dst>",
 	Short: "Restore backup from your server",
-	Long: `Please when running this command, <scr> <dest> are only usable with absolute path. <scr> is where your archive is stored. <dst> is where your obsidian vault is setupt`,
+	Long: `Please when running this command, <scr> <dest> are only usable with absolute path. <scr> is where your archive is stored. <dst> is where your obsidian vault is setupt
+<src>   absolute path to the archive you downloaded
+<dest> absolute path to your obsidian path
+	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !filepath.IsAbs(args[0]) || !filepath.IsAbs(args[1]) {fmt.Println("The path must be absolute"); cmd.Help(); return} 
 		err := internal.Unzip_archvie(args[0], args[1])

@@ -15,7 +15,10 @@ import (
 var backupCmd = &cobra.Command{
 	Use:   "backup <scr> <dst>",
 	Short: "Create and archive of your obsidian folder, encrypting if needed and send it to a server",
-	Long: "Please when running this command, <scr> and <dest> are only usable with absolute path",
+	Long: `Please when running this command, <scr> and <dest> are only usable with absolute path
+<src>   absolute path to the obsidian vault
+<dest> absolute path where you wanna save your back in zip format"
+`,
 	Args:  cobra.ExactArgs(2), //Checking with cobra 
 	Run: func(cmd *cobra.Command, args []string) {
 		if !filepath.IsAbs(args[0]) || !filepath.IsAbs(args[1]) {fmt.Println("The path must be absolute"); cmd.Help(); return} 
