@@ -2,3 +2,4 @@ test/
 test.zip
 backup
 .DS_Store
+test-cli
